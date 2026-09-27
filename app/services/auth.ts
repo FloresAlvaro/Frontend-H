@@ -1,4 +1,5 @@
-import type { UserRole } from "~~/types";
+import { useApiClient } from "./api";
+import type { UserRole } from "~/types";
 
 /**
  * Servicio de autenticación

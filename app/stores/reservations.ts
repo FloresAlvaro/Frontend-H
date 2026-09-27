@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
-import { useApiClient } from "../../services/api";
+import { useApiClient } from "../services/api";
 import type {
   Reservation,
   ReservationStatus,
   CreateReservationRequest,
   UpdateReservationRequest,
-} from "~~/types";
+} from "~/types";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -54,6 +54,7 @@ export const useReservationsStore = defineStore("reservations", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando reservas");
       console.error("Error fetchReservations:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -72,6 +73,7 @@ export const useReservationsStore = defineStore("reservations", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando reserva");
       console.error("Error fetchReservation:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -90,6 +92,7 @@ export const useReservationsStore = defineStore("reservations", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando reservas activas");
       console.error("Error fetchActiveReservations:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -108,6 +111,7 @@ export const useReservationsStore = defineStore("reservations", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando próximas reservas");
       console.error("Error fetchUpcomingReservations:", err);
+      throw err;
     } finally {
       loading.value = false;
     }

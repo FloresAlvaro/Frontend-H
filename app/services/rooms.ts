@@ -1,9 +1,10 @@
+import { useApiClient } from "./api";
 import type {
   Room,
   RoomStatus,
   CreateRoomRequest,
   UpdateRoomRequest,
-} from "~~/types";
+} from "~/types";
 
 export const useRoomsService = () => {
   const api = useApiClient();

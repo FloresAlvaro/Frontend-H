@@ -1,10 +1,6 @@
 import { defineStore } from "pinia";
-import { useApiClient } from "../../services/api";
-import type {
-  Client,
-  CreateClientRequest,
-  UpdateClientRequest,
-} from "~~/types";
+import { useApiClient } from "../services/api";
+import type { Client, CreateClientRequest, UpdateClientRequest } from "~/types";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -51,6 +47,7 @@ export const useClientsStore = defineStore("clients", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando clientes");
       console.error("Error fetchClients:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -69,6 +66,7 @@ export const useClientsStore = defineStore("clients", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando cliente");
       console.error("Error fetchClient:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -152,6 +150,7 @@ export const useClientsStore = defineStore("clients", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error buscando clientes");
       console.error("Error searchClients:", err);
+      throw err;
     } finally {
       loading.value = false;
     }

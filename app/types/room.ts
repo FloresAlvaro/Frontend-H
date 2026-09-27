@@ -72,6 +72,7 @@ export interface OccupancyStats {
   occupied: string;
   maintenance: string;
   reserved: string;
+  byFloor?: Record<string, number>;
 }
 
 export interface AvailabilityStats {

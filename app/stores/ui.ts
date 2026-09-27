@@ -69,10 +69,14 @@ export const useUiStore = defineStore("ui", () => {
     }
   };
 
-  const success = (message: string) => addNotification("success", message);
-  const error = (message: string) => addNotification("error", message, 5000);
-  const warning = (message: string) => addNotification("warning", message);
-  const info = (message: string) => addNotification("info", message);
+  const success = (message: string, duration = 3000) =>
+    addNotification("success", message, duration);
+  const error = (message: string, duration = 5000) =>
+    addNotification("error", message, duration);
+  const warning = (message: string, duration = 3000) =>
+    addNotification("warning", message, duration);
+  const info = (message: string, duration = 3000) =>
+    addNotification("info", message, duration);
 
   const openModal = (name: string) => {
     modals.value[name] = true;

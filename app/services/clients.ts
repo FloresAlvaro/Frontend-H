@@ -1,4 +1,5 @@
-import type { CreateClientRequest, UpdateClientRequest } from "~~/types";
+import { useApiClient } from "./api";
+import type { CreateClientRequest, UpdateClientRequest } from "~/types";
 
 export const useClientsService = () => {
   const api = useApiClient();
@@ -18,6 +19,15 @@ export const useClientsService = () => {
       return await api.getClient(id);
     } catch (error) {
       console.error("Error cargando cliente:", error);
+      throw error;
+    }
+  };
+
+  const getClientHistory = async (clientId: number) => {
+    try {
+      return await api.getClientHistory(clientId);
+    } catch (error) {
+      console.error("Error cargando historial del cliente:", error);
       throw error;
     }
   };
@@ -66,6 +76,7 @@ export const useClientsService = () => {
   return {
     getClients,
     getClient,
+    getClientHistory,
     createClient,
     updateClient,
     deleteClient,

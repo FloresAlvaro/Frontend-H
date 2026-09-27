@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { useApiClient } from "../../services/api";
+import { useApiClient } from "../services/api";
 import type {
   OccupancyStats,
   Room,
@@ -7,7 +7,7 @@ import type {
   RoomType,
   CreateRoomRequest,
   UpdateRoomRequest,
-} from "~~/types";
+} from "~/types";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -58,6 +58,7 @@ export const useRoomsStore = defineStore("rooms", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando habitaciones");
       console.error("Error fetchRooms:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -76,6 +77,7 @@ export const useRoomsStore = defineStore("rooms", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando habitación");
       console.error("Error fetchRoom:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -97,6 +99,7 @@ export const useRoomsStore = defineStore("rooms", () => {
         "Error cargando habitaciones disponibles",
       );
       console.error("Error fetchAvailableRooms:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -115,6 +118,7 @@ export const useRoomsStore = defineStore("rooms", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando ocupación");
       console.error("Error fetchOccupancyStatus:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -176,6 +180,7 @@ export const useRoomsStore = defineStore("rooms", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando tipos de habitación");
       console.error("Error fetchRoomTypes:", err);
+      throw err;
     } finally {
       loading.value = false;
     }

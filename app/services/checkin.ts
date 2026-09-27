@@ -1,3 +1,5 @@
+import { useApiClient } from "./api";
+
 export const useCheckInService = () => {
   const api = useApiClient();
   const uiStore = useUiStore();

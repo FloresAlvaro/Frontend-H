@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
-import { useApiClient } from "../../services/api";
+import { useApiClient } from "../services/api";
 import type {
   Payment,
   PaymentStats,
   PaymentStatus,
   CreatePaymentRequest,
   UpdatePaymentRequest,
-} from "~~/types";
+} from "~/types";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -87,6 +87,7 @@ export const usePaymentsStore = defineStore("payments", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando pagos");
       console.error("Error fetchPayments:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -105,6 +106,7 @@ export const usePaymentsStore = defineStore("payments", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando pago");
       console.error("Error fetchPayment:", err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -123,6 +125,7 @@ export const usePaymentsStore = defineStore("payments", () => {
     } catch (err: unknown) {
       error.value = getErrorMessage(err, "Error cargando pagos pendientes");
       console.error("Error fetchPendingPayments:", err);
+      throw err;
     } finally {
       loading.value = false;
     }

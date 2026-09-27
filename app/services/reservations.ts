@@ -1,8 +1,9 @@
+import { useApiClient } from "./api";
 import type {
   ReservationStatus,
   CreateReservationRequest,
   UpdateReservationRequest,
-} from "~~/types";
+} from "~/types";
 
 export const useReservationsService = () => {
   const api = useApiClient();

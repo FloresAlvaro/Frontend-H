@@ -21,7 +21,7 @@ import type {
   UpdateReservationRequest,
   UpdateRoomRequest,
   User,
-} from "~~/types";
+} from "~/types";
 
 /**
  * Cliente API base configurado para conectarse al backend Express
@@ -83,6 +83,7 @@ export const useApiClient = () => {
   });
 
   return {
+    request: api,
     // ==================== USUARIOS ====================
     login: (data: LoginRequest) =>
       api<ApiResponse<LoginResponse>>("/users/login", {

@@ -1,8 +1,9 @@
+import { useApiClient } from "./api";
 import type {
   PaymentStatus,
   CreatePaymentRequest,
   UpdatePaymentRequest,
-} from "~~/types";
+} from "~/types";
 
 export const usePaymentsService = () => {
   const api = useApiClient();
