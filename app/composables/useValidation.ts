@@ -82,7 +82,7 @@ export const useValidation = () => {
   /**
    * Validar campo requerido
    */
-  const validateRequired = (value: any): boolean => {
+  const validateRequired = (value: unknown): boolean => {
     if (value === null || value === undefined) return false;
     if (typeof value === "string") return value.trim().length > 0;
     if (Array.isArray(value)) return value.length > 0;
@@ -106,14 +106,19 @@ export const useValidation = () => {
   /**
    * Validar número
    */
-  const validateNumber = (value: any): boolean => {
-    return !isNaN(value) && value !== "";
+  const validateNumber = (value: unknown): boolean => {
+    return (
+      value !== "" &&
+      value !== null &&
+      value !== undefined &&
+      Number.isFinite(Number(value))
+    );
   };
 
   /**
    * Validar número positivo
    */
-  const validatePositiveNumber = (value: any): boolean => {
+  const validatePositiveNumber = (value: unknown): boolean => {
     return validateNumber(value) && Number(value) > 0;
   };
 
@@ -226,8 +231,8 @@ export const useValidation = () => {
    * Validar múltiples campos (objeto)
    */
   const validateObject = (
-    obj: Record<string, any>,
-    schema: Record<string, (value: any) => boolean>,
+    obj: Record<string, unknown>,
+    schema: Record<string, (value: unknown) => boolean>,
   ): { isValid: boolean; errors: Record<string, string> } => {
     const errors: Record<string, string> = {};
 

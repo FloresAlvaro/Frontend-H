@@ -3,7 +3,7 @@
     <div class="card-header">
       <div>
         <h3>#{{ reservation.id }}</h3>
-        <p>{{ reservation.client?.name }}</p>
+        <p>{{ reservation.client_name || 'Cliente' }}</p>
       </div>
       <span :class="['status-badge', `status-${reservation.status}`]">
         {{ RESERVATION_STATUS_LABELS[reservation.status] }}
@@ -24,12 +24,12 @@
 
       <div class="room-info">
         <small>Habitación</small>
-        <p>{{ reservation.room?.number }} - {{ reservation.room?.room_type?.name }}</p>
+        <p>{{ reservation.room_number }} - {{ reservation.room_type_name }}</p>
       </div>
 
       <div class="price">
         <small>Total</small>
-        <p>{{ formatCurrency(reservation.total_price) }}</p>
+          <p>{{ formatCurrency(Number(reservation.total_price)) }}</p>
       </div>
 
       <div class="card-footer">

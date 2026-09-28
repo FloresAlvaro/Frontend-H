@@ -1,6 +1,6 @@
 <template>
   <div class="input-wrapper">
-    <label v-if="label" :for="id" class="input-label">
+    <label v-if="label" :for="inputId" class="input-label">
       {{ label }}
       <span v-if="required" class="required">*</span>
     </label>
@@ -9,7 +9,7 @@
       <span v-if="prefixIcon" class="input-prefix">{{ prefixIcon }}</span>
 
       <input
-        :id="id"
+        :id="inputId"
         :type="type"
         :value="modelValue"
         :placeholder="placeholder"
@@ -19,7 +19,7 @@
         @input="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
-      />
+      >
 
       <span v-if="suffixIcon" class="input-suffix">{{ suffixIcon }}</span>
     </div>
@@ -30,11 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { useId } from 'vue';
 
 interface Props {
   modelValue: string | number;
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'date' | 'datetime-local';
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'date' | 'time' | 'datetime-local';
   label?: string;
   placeholder?: string;
   disabled?: boolean;
@@ -49,8 +49,19 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'text',
-  id: () => `input-${Math.random().toString(36).substr(2, 9)}`
+  label: '',
+  placeholder: '',
+  disabled: false,
+  required: false,
+  error: '',
+  success: false,
+  hint: '',
+  prefixIcon: '',
+  suffixIcon: '',
+  id: ''
 });
+
+const inputId = props.id || useId();
 
 const emit = defineEmits<{
   'update:modelValue': [value: string | number];

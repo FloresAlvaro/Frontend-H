@@ -1,3 +1,5 @@
+import type { User } from "~/types";
+
 /**
  * Funciones para manejar localStorage y sessionStorage
  */
@@ -7,7 +9,7 @@
 /**
  * Guardar en localStorage
  */
-export const setLocalStorage = (key: string, value: any): void => {
+export const setLocalStorage = (key: string, value: unknown): void => {
   try {
     const serialized = JSON.stringify(value);
     localStorage.setItem(key, serialized);
@@ -19,13 +21,16 @@ export const setLocalStorage = (key: string, value: any): void => {
 /**
  * Obtener de localStorage
  */
-export const getLocalStorage = <T = any>(key: string, defaultValue?: T): T | null => {
+export const getLocalStorage = <T = unknown>(
+  key: string,
+  defaultValue?: T,
+): T | null => {
   try {
     const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : defaultValue || null;
+    return item ? (JSON.parse(item) as T) : (defaultValue ?? null);
   } catch (error) {
     console.error(`Error leyendo de localStorage (${key}):`, error);
-    return defaultValue || null;
+    return defaultValue ?? null;
   }
 };
 
@@ -47,7 +52,7 @@ export const clearLocalStorage = (): void => {
   try {
     localStorage.clear();
   } catch (error) {
-    console.error('Error limpiando localStorage:', error);
+    console.error("Error limpiando localStorage:", error);
   }
 };
 
@@ -58,7 +63,7 @@ export const getLocalStorageKeys = (): string[] => {
   try {
     return Object.keys(localStorage);
   } catch (error) {
-    console.error('Error obteniendo claves de localStorage:', error);
+    console.error("Error obteniendo claves de localStorage:", error);
     return [];
   }
 };
@@ -69,7 +74,7 @@ export const getLocalStorageKeys = (): string[] => {
 export const hasLocalStorage = (key: string): boolean => {
   try {
     return localStorage.getItem(key) !== null;
-  } catch (error) {
+  } catch {
     return false;
   }
 };
@@ -79,29 +84,34 @@ export const hasLocalStorage = (key: string): boolean => {
  */
 export const setLocalStorageWithExpiry = (
   key: string,
-  value: any,
-  expiryMs: number
+  value: unknown,
+  expiryMs: number,
 ): void => {
   try {
     const item = {
       value,
-      expiry: Date.now() + expiryMs
+      expiry: Date.now() + expiryMs,
     };
     localStorage.setItem(key, JSON.stringify(item));
   } catch (error) {
-    console.error(`Error guardando en localStorage con expiración (${key}):`, error);
+    console.error(
+      `Error guardando en localStorage con expiración (${key}):`,
+      error,
+    );
   }
 };
 
 /**
  * Obtener de localStorage verificando expiración
  */
-export const getLocalStorageWithExpiry = <T = any>(key: string): T | null => {
+export const getLocalStorageWithExpiry = <T = unknown>(
+  key: string,
+): T | null => {
   try {
     const item = localStorage.getItem(key);
     if (!item) return null;
 
-    const parsed = JSON.parse(item);
+    const parsed = JSON.parse(item) as { expiry?: number; value: T };
 
     // Verificar si expiró
     if (parsed.expiry && Date.now() > parsed.expiry) {
@@ -111,7 +121,10 @@ export const getLocalStorageWithExpiry = <T = any>(key: string): T | null => {
 
     return parsed.value;
   } catch (error) {
-    console.error(`Error leyendo de localStorage con expiración (${key}):`, error);
+    console.error(
+      `Error leyendo de localStorage con expiración (${key}):`,
+      error,
+    );
     return null;
   }
 };
@@ -121,7 +134,7 @@ export const getLocalStorageWithExpiry = <T = any>(key: string): T | null => {
 /**
  * Guardar en sessionStorage
  */
-export const setSessionStorage = (key: string, value: any): void => {
+export const setSessionStorage = (key: string, value: unknown): void => {
   try {
     const serialized = JSON.stringify(value);
     sessionStorage.setItem(key, serialized);
@@ -133,13 +146,16 @@ export const setSessionStorage = (key: string, value: any): void => {
 /**
  * Obtener de sessionStorage
  */
-export const getSessionStorage = <T = any>(key: string, defaultValue?: T): T | null => {
+export const getSessionStorage = <T = unknown>(
+  key: string,
+  defaultValue?: T,
+): T | null => {
   try {
     const item = sessionStorage.getItem(key);
-    return item ? JSON.parse(item) : defaultValue || null;
+    return item ? (JSON.parse(item) as T) : (defaultValue ?? null);
   } catch (error) {
     console.error(`Error leyendo de sessionStorage (${key}):`, error);
-    return defaultValue || null;
+    return defaultValue ?? null;
   }
 };
 
@@ -161,7 +177,7 @@ export const clearSessionStorage = (): void => {
   try {
     sessionStorage.clear();
   } catch (error) {
-    console.error('Error limpiando sessionStorage:', error);
+    console.error("Error limpiando sessionStorage:", error);
   }
 };
 
@@ -169,27 +185,27 @@ export const clearSessionStorage = (): void => {
 
 export const STORAGE_KEYS = {
   // Auth
-  AUTH_TOKEN: 'auth_token',
-  AUTH_USER: 'auth_user',
-  AUTH_REFRESH_TOKEN: 'auth_refresh_token',
+  AUTH_TOKEN: "auth_token",
+  AUTH_USER: "auth_user",
+  AUTH_REFRESH_TOKEN: "auth_refresh_token",
 
   // UI
-  THEME: 'theme',
-  SIDEBAR_STATE: 'sidebar_state',
-  LANGUAGE: 'language',
+  THEME: "theme",
+  SIDEBAR_STATE: "sidebar_state",
+  LANGUAGE: "language",
 
   // Data
-  CLIENTS: 'clients_cache',
-  ROOMS: 'rooms_cache',
-  RESERVATIONS: 'reservations_cache',
+  CLIENTS: "clients_cache",
+  ROOMS: "rooms_cache",
+  RESERVATIONS: "reservations_cache",
 
   // Preferences
-  USER_PREFERENCES: 'user_preferences',
-  RECENT_SEARCHES: 'recent_searches',
+  USER_PREFERENCES: "user_preferences",
+  RECENT_SEARCHES: "recent_searches",
 
   // Temporal
-  REDIRECT_URL: 'redirect_url',
-  FORM_DRAFT: 'form_draft'
+  REDIRECT_URL: "redirect_url",
+  FORM_DRAFT: "form_draft",
 } as const;
 
 // ==================== FUNCIONES DE CONVENIENCIA ====================
@@ -211,15 +227,15 @@ export const getAuthToken = (): string | null => {
 /**
  * Guardar usuario
  */
-export const saveAuthUser = (user: any): void => {
+export const saveAuthUser = (user: User): void => {
   setLocalStorage(STORAGE_KEYS.AUTH_USER, user);
 };
 
 /**
  * Obtener usuario
  */
-export const getAuthUser = (): any | null => {
-  return getLocalStorage(STORAGE_KEYS.AUTH_USER);
+export const getAuthUser = (): User | null => {
+  return getLocalStorage<User>(STORAGE_KEYS.AUTH_USER);
 };
 
 /**
@@ -234,15 +250,15 @@ export const clearAuthStorage = (): void => {
 /**
  * Guardar tema
  */
-export const saveTheme = (theme: 'light' | 'dark'): void => {
+export const saveTheme = (theme: "light" | "dark"): void => {
   setLocalStorage(STORAGE_KEYS.THEME, theme);
 };
 
 /**
  * Obtener tema
  */
-export const getTheme = (): 'light' | 'dark' | null => {
-  return getLocalStorage<'light' | 'dark'>(STORAGE_KEYS.THEME);
+export const getTheme = (): "light" | "dark" | null => {
+  return getLocalStorage<"light" | "dark">(STORAGE_KEYS.THEME);
 };
 
 /**
@@ -264,7 +280,7 @@ export const getAndClearRedirectUrl = (): string | null => {
 /**
  * Guardar borrador de formulario
  */
-export const savFormDraft = (formName: string, data: any): void => {
+export const savFormDraft = (formName: string, data: unknown): void => {
   const key = `${STORAGE_KEYS.FORM_DRAFT}_${formName}`;
   setLocalStorageWithExpiry(key, data, 24 * 60 * 60 * 1000); // 24 horas
 };
@@ -272,7 +288,7 @@ export const savFormDraft = (formName: string, data: any): void => {
 /**
  * Obtener borrador de formulario
  */
-export const getFormDraft = (formName: string): any | null => {
+export const getFormDraft = (formName: string): unknown | null => {
   const key = `${STORAGE_KEYS.FORM_DRAFT}_${formName}`;
   return getLocalStorageWithExpiry(key);
 };

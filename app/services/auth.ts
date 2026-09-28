@@ -1,5 +1,5 @@
 import { useApiClient } from "./api";
-import type { UserRole } from "~/types";
+import type { RegisterRequest, UserRole } from "~/types";
 
 /**
  * Servicio de autenticación
@@ -18,12 +18,33 @@ export const useAuthService = () => {
       if (response.success && response.data) {
         authStore.setAuth(response.data.user, response.data.token);
         uiStore.success("Sesión iniciada correctamente");
-        await router.push("/");
         return response.data;
       }
     } catch (error: unknown) {
       authStore.setError("Email o contraseña incorrectos");
       uiStore.error("Email o contraseña incorrectos");
+      throw error;
+    } finally {
+      uiStore.setLoading(false);
+    }
+  };
+
+  const register = async (
+    data: Pick<RegisterRequest, "name" | "email" | "password">,
+  ) => {
+    try {
+      uiStore.setLoading(true);
+      const response = await api.register(data);
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "No se pudo crear la cuenta");
+      }
+      authStore.setAuth(response.data.user, response.data.token);
+      uiStore.success("Cuenta creada correctamente");
+      return response.data;
+    } catch (error: unknown) {
+      uiStore.error(
+        error instanceof Error ? error.message : "No se pudo crear la cuenta",
+      );
       throw error;
     } finally {
       uiStore.setLoading(false);
@@ -61,6 +82,7 @@ export const useAuthService = () => {
 
   return {
     login,
+    register,
     logout,
     getProfile,
     hasRole,

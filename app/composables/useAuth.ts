@@ -128,9 +128,9 @@ export const useAuth = () => {
     }
 
     const roleRoutes: Record<string, string> = {
-      admin: "/admin/dashboard",
-      manager: "/manager/dashboard",
-      receptionist: "/receptionist/dashboard",
+      admin: "/dashboard",
+      manager: "/dashboard",
+      receptionist: "/dashboard",
     };
 
     const route = roleRoutes[user.value?.role || "receptionist"] || "/";

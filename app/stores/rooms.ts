@@ -204,13 +204,13 @@ export const useRoomsStore = defineStore("rooms", () => {
 
   return {
     // State
-    rooms: readonly(rooms),
-    roomTypes: readonly(roomTypes),
-    currentRoom: readonly(currentRoom),
-    loading: readonly(loading),
-    error: readonly(error),
-    occupancyStats: readonly(occupancyStats),
-    pagination: readonly(pagination),
+    rooms,
+    roomTypes,
+    currentRoom,
+    loading,
+    error,
+    occupancyStats,
+    pagination,
 
     // Computed
     availableRooms,

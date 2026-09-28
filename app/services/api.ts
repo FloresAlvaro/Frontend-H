@@ -9,9 +9,12 @@ import type {
   CreateRoomRequest,
   LoginRequest,
   LoginResponse,
+  RegisterRequest,
   OccupancyStats,
   PaginatedApiResponse,
   Payment,
+  RevenueByMethod,
+  RevenueReport,
   Reservation,
   ReservationStatus,
   Room,
@@ -91,7 +94,74 @@ export const useApiClient = () => {
         body: data,
       }),
 
+    register: (data: Pick<RegisterRequest, "name" | "email" | "password">) =>
+      api<ApiResponse<LoginResponse>>("/users/register", {
+        method: "POST",
+        body: data,
+      }),
+
+    getUsers: (page = 1, pageSize = 100) =>
+      api<PaginatedApiResponse<User>>(
+        `/users?page=${page}&pageSize=${pageSize}`,
+      ),
+
+    updateUser: (
+      id: number,
+      data: Pick<User, "name" | "email" | "role" | "is_active">,
+    ) => api<ApiResponse<User>>(`/users/${id}`, { method: "PUT", body: data }),
+
+    setUserActive: (id: number, active: boolean) =>
+      api<ApiResponse<Pick<User, "id" | "name" | "is_active">>>(
+        `/users/${id}/${active ? "activate" : "deactivate"}`,
+        { method: "PATCH" },
+      ),
+
+    changePassword: (
+      id: number,
+      data: {
+        currentPassword: string;
+        newPassword: string;
+        confirmPassword: string;
+      },
+    ) =>
+      api<ApiResponse<User>>(`/users/${id}/password`, {
+        method: "PATCH",
+        body: data,
+      }),
+
     getProfile: () => api<ApiResponse<User>>("/users/profile"),
+
+    getDashboardSummary: (startDate: string, endDate: string) =>
+      api<
+        ApiResponse<{
+          period: { startDate: string; endDate: string };
+          occupancy: OccupancyStats;
+          reservations: {
+            active: Reservation[];
+            upcoming: Reservation[];
+            total: number;
+          };
+          checkIns: { pendingCheckOuts: CheckInLogData[] };
+          payments: {
+            pending: Payment[];
+            pendingTotal: number;
+            revenue: RevenueReport[];
+          };
+          clients: { total: number };
+        }>
+      >(
+        `/dashboard?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`,
+      ),
+
+    getRevenueByPeriod: (startDate: string, endDate: string) =>
+      api<ApiResponse<RevenueReport[]>>(
+        `/payments/revenue/period?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`,
+      ),
+
+    getRevenueByMethod: (startDate: string, endDate: string) =>
+      api<ApiResponse<RevenueByMethod[]>>(
+        `/payments/revenue/method?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`,
+      ),
 
     // ==================== CLIENTES ====================
     getClients: (page = 1, pageSize = 10) =>

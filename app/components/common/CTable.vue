@@ -22,8 +22,8 @@
       <tbody>
         <tr v-for="(row, index) in rows" :key="index" class="table-row">
           <td v-for="col in columns" :key="col.key">
-            <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">
-              {{ row[col.key] }}
+            <slot :name="`cell-${col.key}`" :row="row" :value="getCellValue(row, col.key)">
+              {{ getCellValue(row, col.key) }}
             </slot>
           </td>
           <td v-if="$slots['actions']" class="actions-cell">
@@ -52,8 +52,8 @@
       <div class="pagination-controls">
         <button
           :disabled="pagination.page === 1"
-          @click="$emit('prev-page')"
           class="pagination-btn"
+          @click="$emit('prev-page')"
         >
           ← Anterior
         </button>
@@ -64,8 +64,8 @@
 
         <button
           :disabled="pagination.page >= pagination.totalPages"
-          @click="$emit('next-page')"
           class="pagination-btn"
+          @click="$emit('next-page')"
         >
           Siguiente →
         </button>
@@ -74,7 +74,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends object">
 interface Column {
   key: string;
   label: string;
@@ -91,15 +91,16 @@ interface Pagination {
 
 interface Props {
   columns: Column[];
-  rows: any[];
+  rows: T[];
   emptyText?: string;
   showPagination?: boolean;
-  pagination?: Pagination;
+  pagination?: Pagination | null;
 }
 
 withDefaults(defineProps<Props>(), {
   emptyText: 'No hay datos disponibles',
-  showPagination: false
+  showPagination: false,
+  pagination: null
 });
 
 const emit = defineEmits<{
@@ -110,6 +111,10 @@ const emit = defineEmits<{
 
 const handleSort = (column: string) => {
   emit('sort', column);
+};
+
+const getCellValue = (row: T, key: string): string | number | boolean | null | undefined => {
+  return (row as Record<string, string | number | boolean | null | undefined>)[key];
 };
 </script>
 

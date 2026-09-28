@@ -8,14 +8,17 @@
     </div>
 
     <div class="card-body">
-      <p class="room-type">{{ room.room_type?.name }}</p>
+      <p class="room-type">{{ room.room_type_name || 'Tipo sin asignar' }}</p>
       <p class="room-floor">📍 Piso {{ room.floor }}</p>
 
       <div class="card-footer">
-        <CButton variant="secondary" size="sm" @click="$emit('edit')">
+        <CButton variant="ghost" size="sm" @click="$emit('view', room.id)">
+          Ver
+        </CButton>
+        <CButton variant="secondary" size="sm" @click="$emit('edit', room.id)">
           Editar
         </CButton>
-        <CButton variant="ghost" size="sm" @click="$emit('maintenance')">
+        <CButton variant="ghost" size="sm" @click="$emit('maintenance', room.id)">
           Mantenimiento
         </CButton>
       </div>
@@ -33,8 +36,9 @@ interface Props {
 
 defineProps<Props>();
 defineEmits<{
-  edit: [];
-  maintenance: [];
+  view: [id: number];
+  edit: [id: number];
+  maintenance: [id: number];
 }>();
 
 const getRoomStatusLabel = (status: string) => ROOM_STATUS_LABELS[status] || status;

@@ -4,22 +4,22 @@
       :columns="columns"
       :rows="payments"
       :pagination="pagination"
-      :showPagination="true"
+      :show-pagination="true"
       @prev-page="$emit('prev-page')"
       @next-page="$emit('next-page')"
     >
       <template #cell-amount="{ value }">
-        {{ formatCurrency(value) }}
+        {{ formatCurrency(Number(value || 0)) }}
       </template>
 
       <template #cell-status="{ value }">
         <span :class="['status-badge', `status-${value}`]">
-          {{ PAYMENT_STATUS_LABELS[value] }}
+          {{ PAYMENT_STATUS_LABELS[String(value)] || value }}
         </span>
       </template>
 
       <template #cell-created_at="{ value }">
-        {{ formatDate(value, 'DD/MM/YYYY HH:mm') }}
+        {{ formatDate(String(value || ''), 'DD/MM/YYYY HH:mm') }}
       </template>
 
       <template #actions="{ row }">
@@ -41,13 +41,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Payment } from '~/types';
+import type { Payment, Pagination } from '~/types';
 import { PAYMENT_STATUS_LABELS } from '~/utils/constants';
 import { formatCurrency, formatDate } from '~/utils/formatters';
 
 interface Props {
   payments: Payment[];
-  pagination: any;
+  pagination: Pick<Pagination, 'page' | 'pageSize' | 'total' | 'totalPages'>;
 }
 
 defineProps<Props>();
@@ -61,7 +61,7 @@ defineEmits<{
 const columns = [
   { key: 'reservation_id', label: 'Reserva' },
   { key: 'amount', label: 'Monto' },
-  { key: 'payment_method', label: 'Método' },
+  { key: 'method', label: 'Método' },
   { key: 'status', label: 'Estado' },
   { key: 'created_at', label: 'Fecha' }
 ];

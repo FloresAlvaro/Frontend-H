@@ -175,11 +175,11 @@ export const useClientsStore = defineStore("clients", () => {
 
   return {
     // State
-    clients: readonly(clients),
-    currentClient: readonly(currentClient),
-    loading: readonly(loading),
-    error: readonly(error),
-    pagination: readonly(pagination),
+    clients,
+    currentClient,
+    loading,
+    error,
+    pagination,
 
     // Computed
     hasClients,

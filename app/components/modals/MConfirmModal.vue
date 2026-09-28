@@ -1,5 +1,5 @@
 <template>
-  <CModal :isOpen="isOpen" title="Confirmar Acción" size="sm" @close="handleCancel">
+  <CModal :is-open="isOpen" title="Confirmar Acción" size="sm" @close="handleCancel">
     <p class="confirm-message">{{ message }}</p>
 
     <template #footer>
@@ -27,7 +27,7 @@ interface Props {
 }
 
 defineProps<Props>();
-defineEmits<{
+const emit = defineEmits<{
   confirm: [];
   cancel: [];
 }>();

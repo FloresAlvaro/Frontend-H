@@ -55,6 +55,8 @@ export interface CheckInLogData {
   client_name?: string;
   room_number?: string;
   room_type_name?: string;
+  scheduled_checkout_date?: string;
+  total_price?: string;
   created_at: string;
   updated_at: string;
 }

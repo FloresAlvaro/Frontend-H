@@ -7,14 +7,14 @@
  */
 export const formatCurrency = (
   amount: number,
-  currency = 'USD',
-  locale = 'es-BO'
+  currency = "USD",
+  locale = "es-BO",
 ): string => {
   return new Intl.NumberFormat(locale, {
-    style: 'currency',
+    style: "currency",
     currency,
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   }).format(amount);
 };
 
@@ -30,28 +30,28 @@ export const formatBs = (amount: number): string => {
  */
 export const formatDate = (
   date: string | Date,
-  format = 'DD/MM/YYYY'
+  format = "DD/MM/YYYY",
 ): string => {
   const d = new Date(date);
 
   if (isNaN(d.getTime())) {
-    return 'Fecha inválida';
+    return "Fecha inválida";
   }
 
-  const day = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
   const year = d.getFullYear();
-  const hours = String(d.getHours()).padStart(2, '0');
-  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
 
   const formats: Record<string, string> = {
-    'DD/MM/YYYY': `${day}/${month}/${year}`,
-    'YYYY-MM-DD': `${year}-${month}-${day}`,
-    'DD MMM YYYY': `${day} ${getMonthName(d.getMonth())} ${year}`,
-    'DD/MM/YYYY HH:mm': `${day}/${month}/${year} ${hours}:${minutes}`
+    "DD/MM/YYYY": `${day}/${month}/${year}`,
+    "YYYY-MM-DD": `${year}-${month}-${day}`,
+    "DD MMM YYYY": `${day} ${getMonthName(d.getMonth())} ${year}`,
+    "DD/MM/YYYY HH:mm": `${day}/${month}/${year} ${hours}:${minutes}`,
   };
 
-  return formats[format] || formats['DD/MM/YYYY'];
+  return formats[format] || `${day}/${month}/${year}`;
 };
 
 /**
@@ -59,35 +59,43 @@ export const formatDate = (
  */
 export const getMonthName = (month: number): string => {
   const months = [
-    'Enero',
-    'Febrero',
-    'Marzo',
-    'Abril',
-    'Mayo',
-    'Junio',
-    'Julio',
-    'Agosto',
-    'Septiembre',
-    'Octubre',
-    'Noviembre',
-    'Diciembre'
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
   ];
-  return months[month] || '';
+  return months[month] || "";
 };
 
 /**
  * Obtener nombre del día
  */
 export const getDayName = (day: number): string => {
-  const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-  return days[day] || '';
+  const days = [
+    "Domingo",
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+  ];
+  return days[day] || "";
 };
 
 /**
  * Formatear teléfono
  */
 export const formatPhone = (phone: string): string => {
-  const cleaned = phone.replace(/\D/g, '');
+  const cleaned = phone.replace(/\D/g, "");
 
   if (cleaned.length === 7) {
     // Teléfono local: 1234567 → 123-4567
@@ -106,7 +114,7 @@ export const formatPhone = (phone: string): string => {
  * Formatear documento (cédula)
  */
 export const formatDocument = (document: string): string => {
-  const cleaned = document.replace(/\D/g, '');
+  const cleaned = document.replace(/\D/g, "");
 
   if (cleaned.length <= 7) {
     return cleaned;
@@ -122,9 +130,9 @@ export const formatDocument = (document: string): string => {
 export const formatName = (name: string): string => {
   return name
     .toLowerCase()
-    .split(' ')
+    .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .join(" ");
 };
 
 /**
@@ -138,16 +146,20 @@ export const formatPercentage = (value: number, decimals = 2): string => {
  * Formatear número grande con separadores
  */
 export const formatNumber = (value: number, decimals = 2): string => {
-  return new Intl.NumberFormat('es-BO', {
+  return new Intl.NumberFormat("es-BO", {
     minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
+    maximumFractionDigits: decimals,
   }).format(value);
 };
 
 /**
  * Truncar texto
  */
-export const truncateText = (text: string, length = 50, suffix = '...'): string => {
+export const truncateText = (
+  text: string,
+  length = 50,
+  suffix = "...",
+): string => {
   if (text.length <= length) return text;
   return text.substring(0, length) + suffix;
 };
@@ -166,9 +178,9 @@ export const toSlug = (text: string): string => {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
 };
 
 /**
@@ -184,17 +196,17 @@ export const formatTimeAgo = (date: string | Date): string => {
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
 
-  if (seconds < 60) return 'hace unos segundos';
-  if (minutes < 60) return `hace ${minutes} minuto${minutes > 1 ? 's' : ''}`;
-  if (hours < 24) return `hace ${hours} hora${hours > 1 ? 's' : ''}`;
-  if (days < 30) return `hace ${days} día${days > 1 ? 's' : ''}`;
+  if (seconds < 60) return "hace unos segundos";
+  if (minutes < 60) return `hace ${minutes} minuto${minutes > 1 ? "s" : ""}`;
+  if (hours < 24) return `hace ${hours} hora${hours > 1 ? "s" : ""}`;
+  if (days < 30) return `hace ${days} día${days > 1 ? "s" : ""}`;
   if (days < 365) {
     const months = Math.floor(days / 30);
-    return `hace ${months} mes${months > 1 ? 'es' : ''}`;
+    return `hace ${months} mes${months > 1 ? "es" : ""}`;
   }
 
   const years = Math.floor(days / 365);
-  return `hace ${years} año${years > 1 ? 's' : ''}`;
+  return `hace ${years} año${years > 1 ? "s" : ""}`;
 };
 
 /**
@@ -208,11 +220,13 @@ export const formatDuration = (milliseconds: number): string => {
 
   const parts: string[] = [];
 
-  if (days > 0) parts.push(`${days} día${days > 1 ? 's' : ''}`);
-  if (hours % 24 > 0) parts.push(`${hours % 24} hora${hours % 24 > 1 ? 's' : ''}`);
-  if (minutes % 60 > 0) parts.push(`${minutes % 60} minuto${minutes % 60 > 1 ? 's' : ''}`);
+  if (days > 0) parts.push(`${days} día${days > 1 ? "s" : ""}`);
+  if (hours % 24 > 0)
+    parts.push(`${hours % 24} hora${hours % 24 > 1 ? "s" : ""}`);
+  if (minutes % 60 > 0)
+    parts.push(`${minutes % 60} minuto${minutes % 60 > 1 ? "s" : ""}`);
 
-  return parts.join(', ') || '0 segundos';
+  return parts.join(", ") || "0 segundos";
 };
 
 /**
@@ -220,10 +234,10 @@ export const formatDuration = (milliseconds: number): string => {
  */
 export const formatDateRange = (
   startDate: string | Date,
-  endDate: string | Date
+  endDate: string | Date,
 ): string => {
-  const start = formatDate(startDate, 'DD MMM');
-  const end = formatDate(endDate, 'DD MMM YYYY');
+  const start = formatDate(startDate, "DD MMM");
+  const end = formatDate(endDate, "DD MMM YYYY");
   return `${start} - ${end}`;
 };
 

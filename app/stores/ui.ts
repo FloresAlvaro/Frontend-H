@@ -119,12 +119,12 @@ export const useUiStore = defineStore("ui", () => {
 
   return {
     // State
-    sidebarOpen: readonly(sidebarOpen),
-    mobileMenuOpen: readonly(mobileMenuOpen),
-    notifications: readonly(notifications),
-    modals: readonly(modals),
-    theme: readonly(theme),
-    loading: readonly(loading),
+    sidebarOpen,
+    mobileMenuOpen,
+    notifications,
+    modals,
+    theme,
+    loading,
 
     // Computed
     isMobile,
@@ -150,3 +150,5 @@ export const useUiStore = defineStore("ui", () => {
     setLoading,
   };
 });
+
+export { useUiStore as useUIStore };

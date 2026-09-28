@@ -7,5 +7,6 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3000/api",
     },
   },
-  modules: ["@nuxt/eslint", "@pinia/nuxt"],
+  components: [{ path: "~/components", pathPrefix: false }],
+  modules: ["@nuxt/eslint", "@pinia/nuxt", "@nuxt/icon"],
 });

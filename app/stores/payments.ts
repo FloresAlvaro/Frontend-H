@@ -223,13 +223,13 @@ export const usePaymentsStore = defineStore("payments", () => {
 
   return {
     // State
-    payments: readonly(payments),
-    currentPayment: readonly(currentPayment),
-    pendingPayments: readonly(pendingPayments),
-    loading: readonly(loading),
-    error: readonly(error),
-    stats: readonly(stats),
-    pagination: readonly(pagination),
+    payments,
+    currentPayment,
+    pendingPayments,
+    loading,
+    error,
+    stats,
+    pagination,
 
     // Computed
     hasPayments,

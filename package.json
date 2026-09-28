@@ -13,6 +13,8 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
+    "@iconify-json/system-uicons": "^1.2.4",
+    "@nuxt/icon": "^2.5.1",
     "@pinia/nuxt": "^0.11.2",
     "nuxt": "^4.5.2",
     "pinia": "^3.0.3",
@@ -21,6 +23,7 @@
   "devDependencies": {
     "@nuxt/eslint": "^1.17.0",
     "eslint": "^10.11.0",
+    "sass-embedded": "^1.89.2",
     "vue-tsc": "^3.3.11"
   }
 }

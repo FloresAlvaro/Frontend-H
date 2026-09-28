@@ -24,7 +24,8 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   elevated: true,
-  bordered: false
+  bordered: false,
+  title: ''
 });
 </script>
 

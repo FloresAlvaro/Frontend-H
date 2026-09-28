@@ -15,7 +15,7 @@
       </div>
       <div class="info-row">
         <span class="label">Documento:</span>
-        <span>{{ client.document_number }}</span>
+        <span>{{ client.document }}</span>
       </div>
 
       <div class="card-footer">

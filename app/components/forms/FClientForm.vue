@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="form">
+  <form class="form" @submit.prevent="handleSubmit">
     <div class="form-row">
       <CInput
         v-model="form.name"
@@ -41,12 +41,12 @@
       />
 
       <CInput
-        v-model="form.document_number"
+        v-model="form.document"
         label="Número Documento"
         placeholder="1234567"
         required
-        :error="errors.document_number"
-        @blur="validateField('document_number')"
+        :error="errors.document"
+        @blur="validateField('document')"
       />
     </div>
 
@@ -54,7 +54,7 @@
       <CInput
         v-model="form.gender"
         label="Género"
-        placeholder="male"
+        placeholder="M"
       />
 
       <CInput
@@ -94,7 +94,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { Client, CreateClientRequest } from '~/types';
+import type { Client, CreateClientRequest, DocumentType, Gender } from '~/types';
 
 interface Props {
   client?: Client | null;
@@ -109,13 +109,24 @@ const emit = defineEmits<{
 
 const { validateEmail, validatePhone, validateDocument } = useValidation();
 
-const form = ref({
+interface ClientFormValues {
+  name: string;
+  email: string;
+  phone: string;
+  document_type: DocumentType;
+  document: string;
+  gender: Gender | '';
+  country: string;
+  address: string;
+}
+
+const form = ref<ClientFormValues>({
   name: '',
   email: '',
   phone: '',
   document_type: 'cedula',
-  document_number: '',
-  gender: 'male',
+  document: '',
+  gender: 'M',
   country: 'Bolivia',
   address: ''
 });
@@ -129,7 +140,27 @@ watch(
   () => props.client,
   (client) => {
     if (client) {
-      form.value = { ...client };
+      form.value = {
+        name: client.name,
+        email: client.email ?? '',
+        phone: client.phone ?? '',
+        document_type: client.document_type,
+        document: client.document,
+        gender: client.gender ?? '',
+        country: client.country ?? 'Bolivia',
+        address: client.address ?? ''
+      };
+    } else {
+      form.value = {
+        name: '',
+        email: '',
+        phone: '',
+        document_type: 'cedula',
+        document: '',
+        gender: 'M',
+        country: 'Bolivia',
+        address: ''
+      };
     }
   },
   { immediate: true }
@@ -149,9 +180,11 @@ const validateField = (field: string) => {
         errors.value.phone = 'Teléfono inválido';
       }
       break;
-    case 'document_number':
-      if (form.value.document_number && !validateDocument(form.value.document_number)) {
-        errors.value.document_number = 'Documento inválido';
+    case 'document':
+      if (!form.value.document.trim()) {
+        errors.value.document = 'Documento requerido';
+      } else if (!validateDocument(form.value.document)) {
+        errors.value.document = 'Documento inválido';
       }
       break;
     case 'name':
@@ -172,7 +205,17 @@ const handleSubmit = () => {
     return;
   }
 
-  emit('submit', form.value as CreateClientRequest);
+  const data: CreateClientRequest = {
+    name: form.value.name.trim(),
+    document: form.value.document.trim(),
+    document_type: form.value.document_type,
+    email: form.value.email.trim() || undefined,
+    phone: form.value.phone.trim() || undefined,
+    country: form.value.country.trim() || undefined,
+    address: form.value.address.trim() || undefined,
+    gender: form.value.gender || undefined
+  };
+  emit('submit', data);
 };
 
 const handleCancel = () => {

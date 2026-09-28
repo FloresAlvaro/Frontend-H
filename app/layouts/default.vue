@@ -27,8 +27,8 @@
           <NavLink
             icon="👤"
             label="Usuarios"
-            href="/admin/users"
-            :active="route.path.startsWith('/admin/users')"
+            href="/admin/settings?tab=users"
+            :active="route.path.startsWith('/admin/settings') && route.query.tab === 'users'"
           />
           <NavLink
             icon="⚙️"
@@ -39,8 +39,8 @@
           <NavLink
             icon="📊"
             label="Reportes"
-            href="/admin/reports"
-            :active="route.path.startsWith('/admin/reports')"
+            href="/reports"
+            :active="route.path.startsWith('/reports')"
           />
         </template>
 
@@ -150,7 +150,7 @@
                 <a href="#" class="dropdown-item">
                   ⚙️ Configuración
                 </a>
-                <hr />
+                <hr >
                 <button
                   class="dropdown-item"
                   @click="handleLogout"
@@ -186,7 +186,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 // Stores
 const uiStore = useUiStore();
@@ -194,7 +194,6 @@ const authStore = useAuthStore();
 
 // Router
 const route = useRoute();
-const router = useRouter();
 
 // Composables
 const { logout } = useAuth();
@@ -233,6 +232,7 @@ const userRoleLabel = computed(() => {
 const pageTitle = computed(() => {
   const titles: Record<string, string> = {
     '/': 'Dashboard',
+    '/dashboard': 'Dashboard',
     '/clients': 'Clientes',
     '/rooms': 'Habitaciones',
     '/reservations': 'Reservas',
@@ -260,19 +260,20 @@ const handleLogout = () => {
   logout();
 };
 
-// Cerrar menú de usuario al hacer clic fuera
-onClickOutside(
-  computed(() => document.querySelector('.user-menu')),
-  () => {
+const handleOutsideClick = (event: MouseEvent) => {
+  if (event.target instanceof Element && !event.target.closest('.user-menu')) {
     showUserMenu.value = false;
   }
-);
+};
+
+onMounted(() => document.addEventListener('click', handleOutsideClick));
+onBeforeUnmount(() => document.removeEventListener('click', handleOutsideClick));
 
 // Cerrar sidebar en mobile al navegar
 watch(
   () => route.path,
   () => {
-    if (window.innerWidth < 768) {
+    if (import.meta.client && window.innerWidth < 768) {
       uiStore.closeSidebar();
     }
   }

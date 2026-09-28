@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="form">
+  <form class="form" @submit.prevent="handleSubmit">
     <div class="form-row-2">
       <CInput
         v-model="form.client_id"
@@ -36,7 +36,7 @@
 
     <div class="form-row">
       <CInput
-        v-model="form.special_requests"
+        v-model="form.notes"
         label="Requerimientos Especiales"
         placeholder="Notas adicionales"
       />
@@ -85,8 +85,20 @@ const form = ref({
   room_id: '',
   check_in: '',
   check_out: '',
-  special_requests: ''
+  notes: ''
 });
+
+watch(() => props.reservation, (reservation) => {
+  form.value = reservation
+    ? {
+        client_id: String(reservation.client_id),
+        room_id: String(reservation.room_id),
+        check_in: reservation.check_in,
+        check_out: reservation.check_out,
+        notes: reservation.notes || ''
+      }
+    : { client_id: '', room_id: '', check_in: '', check_out: '', notes: '' };
+}, { immediate: true });
 
 const nights = computed(() => {
   if (form.value.check_in && form.value.check_out) {
@@ -101,7 +113,18 @@ const totalPrice = computed(() => {
 });
 
 const handleSubmit = () => {
-  emit('submit', form.value as CreateReservationRequest);
+  const clientId = Number(form.value.client_id);
+  const roomId = Number(form.value.room_id);
+  if (!Number.isInteger(clientId) || clientId <= 0 || !Number.isInteger(roomId) || roomId <= 0) return;
+
+  const data: CreateReservationRequest = {
+    client_id: clientId,
+    room_id: roomId,
+    check_in: form.value.check_in,
+    check_out: form.value.check_out,
+    notes: form.value.notes.trim() || undefined
+  };
+  emit('submit', data);
 };
 
 const handleCancel = () => {

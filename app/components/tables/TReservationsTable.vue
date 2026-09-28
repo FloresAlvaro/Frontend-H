@@ -10,22 +10,22 @@
       :columns="columns"
       :rows="reservations"
       :pagination="pagination"
-      :showPagination="true"
+      :show-pagination="true"
       @prev-page="$emit('prev-page')"
       @next-page="$emit('next-page')"
     >
       <template #cell-status="{ value }">
         <span :class="['status-badge', `status-${value}`]">
-          {{ RESERVATION_STATUS_LABELS[value] }}
+          {{ RESERVATION_STATUS_LABELS[String(value)] || value }}
         </span>
       </template>
 
       <template #cell-check_in="{ value }">
-        {{ formatDate(value, 'DD/MM/YYYY') }}
+        {{ formatDate(String(value || ''), 'DD/MM/YYYY') }}
       </template>
 
       <template #cell-check_out="{ value }">
-        {{ formatDate(value, 'DD/MM/YYYY') }}
+        {{ formatDate(String(value || ''), 'DD/MM/YYYY') }}
       </template>
 
       <template #actions="{ row }">
@@ -41,13 +41,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Reservation } from '~/types';
+import type { Pagination, Reservation } from '~/types';
 import { RESERVATION_STATUS_LABELS } from '~/utils/constants';
 import { formatDate } from '~/utils/formatters';
 
 interface Props {
   reservations: Reservation[];
-  pagination: any;
+  pagination: Pick<Pagination, 'page' | 'pageSize' | 'total' | 'totalPages'>;
 }
 
 defineProps<Props>();
@@ -60,8 +60,8 @@ defineEmits<{
 }>();
 
 const columns = [
-  { key: 'client', label: 'Cliente' },
-  { key: 'room', label: 'Habitación' },
+  { key: 'client_name', label: 'Cliente' },
+  { key: 'room_number', label: 'Habitación' },
   { key: 'check_in', label: 'Check-in' },
   { key: 'check_out', label: 'Check-out' },
   { key: 'status', label: 'Estado' }

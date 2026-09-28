@@ -202,13 +202,13 @@ export const useReservationsStore = defineStore("reservations", () => {
 
   return {
     // State
-    reservations: readonly(reservations),
-    currentReservation: readonly(currentReservation),
-    activeReservations: readonly(activeReservations),
-    upcomingReservations: readonly(upcomingReservations),
-    loading: readonly(loading),
-    error: readonly(error),
-    pagination: readonly(pagination),
+    reservations,
+    currentReservation,
+    activeReservations,
+    upcomingReservations,
+    loading,
+    error,
+    pagination,
 
     // Computed
     hasReservations,

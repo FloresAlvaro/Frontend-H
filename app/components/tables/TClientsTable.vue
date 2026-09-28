@@ -1,5 +1,5 @@
 <template>
-  <CCard title="Clientes" v-if="true">
+  <CCard v-if="true" title="Clientes">
     <template #header-action>
       <CButton variant="primary" size="sm" icon="➕" @click="$emit('add')">
         Nuevo
@@ -10,17 +10,17 @@
       :columns="columns"
       :rows="clients"
       :pagination="pagination"
-      :showPagination="true"
+      :show-pagination="true"
       @sort="handleSort"
       @prev-page="$emit('prev-page')"
       @next-page="$emit('next-page')"
     >
-      <template #cell-document_number="{ value }">
-        {{ formatDocument(value) }}
+      <template #cell-document="{ value }">
+        {{ formatDocument(String(value || '')) }}
       </template>
 
       <template #cell-created_at="{ value }">
-        {{ formatDate(value, 'DD/MM/YYYY') }}
+        {{ formatDate(String(value || ''), 'DD/MM/YYYY') }}
       </template>
 
       <template #actions="{ row }">
@@ -46,17 +46,17 @@
 </template>
 
 <script setup lang="ts">
-import type { Client } from '~/types';
+import type { Client, Pagination } from '~/types';
 import { formatDocument, formatDate } from '~/utils/formatters';
 
 interface Props {
   clients: Client[];
-  pagination: any;
+  pagination: Pick<Pagination, 'page' | 'pageSize' | 'total' | 'totalPages'>;
   loading?: boolean;
 }
 
 defineProps<Props>();
-defineEmits<{
+const emit = defineEmits<{
   add: [];
   edit: [id: number];
   delete: [id: number];
@@ -69,7 +69,9 @@ const columns = [
   { key: 'name', label: 'Nombre', sortable: true },
   { key: 'email', label: 'Email', width: '200px' },
   { key: 'phone', label: 'Teléfono' },
-  { key: 'document_number', label: 'Documento' },
+  { key: 'document', label: 'Documento' },
   { key: 'created_at', label: 'Registrado' }
 ];
+
+const handleSort = (column: string) => emit('sort', column);
 </script>

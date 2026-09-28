@@ -7,7 +7,10 @@
 /**
  * Calcular número de noches entre dos fechas
  */
-export const calculateNights = (checkIn: string | Date, checkOut: string | Date): number => {
+export const calculateNights = (
+  checkIn: string | Date,
+  checkOut: string | Date,
+): number => {
   const start = new Date(checkIn);
   const end = new Date(checkOut);
   const diff = end.getTime() - start.getTime();
@@ -21,7 +24,7 @@ export const calculateTotalPrice = (
   pricePerNight: number,
   checkIn: string | Date,
   checkOut: string | Date,
-  discountPercent = 0
+  discountPercent = 0,
 ): number => {
   const nights = calculateNights(checkIn, checkOut);
   const subtotal = pricePerNight * nights;
@@ -32,7 +35,10 @@ export const calculateTotalPrice = (
 /**
  * Calcular ocupación porcentual
  */
-export const calculateOccupancyRate = (occupied: number, total: number): number => {
+export const calculateOccupancyRate = (
+  occupied: number,
+  total: number,
+): number => {
   if (total === 0) return 0;
   return Math.round((occupied / total) * 100);
 };
@@ -49,7 +55,10 @@ export const calculateAverage = (numbers: number[]): number => {
 /**
  * Calcular descuento
  */
-export const calculateDiscount = (original: number, discountPercent: number): number => {
+export const calculateDiscount = (
+  original: number,
+  discountPercent: number,
+): number => {
   return (original * discountPercent) / 100;
 };
 
@@ -58,31 +67,36 @@ export const calculateDiscount = (original: number, discountPercent: number): nu
 /**
  * Convertir booleano a sí/no
  */
-export const booleanToText = (value: boolean, trueText = 'Sí', falseText = 'No'): string => {
+export const booleanToText = (
+  value: boolean,
+  trueText = "Sí",
+  falseText = "No",
+): string => {
   return value ? trueText : falseText;
 };
 
 /**
  * Convertir array a objeto clave-valor
  */
-export const arrayToObject = <T extends Record<string, any>>(
+export const arrayToObject = <T extends Record<string, unknown>>(
   array: T[],
-  keyField: keyof T
+  keyField: keyof T,
 ): Record<string | number, T> => {
-  return array.reduce(
-    (obj, item) => {
-      obj[item[keyField] as any] = item;
-      return obj;
-    },
-    {} as Record<string | number, T>
-  );
+  const result: Record<string | number, T> = {};
+  for (const item of array) {
+    const key = item[keyField];
+    if (typeof key === "string" || typeof key === "number") result[key] = item;
+  }
+  return result;
 };
 
 /**
  * Convertir objeto a array
  */
-export const objectToArray = <T extends Record<string, any>>(obj: T): T[keyof T][] => {
-  return Object.values(obj);
+export const objectToArray = <T extends Record<string, unknown>>(
+  obj: T,
+): T[keyof T][] => {
+  return Object.values(obj) as T[keyof T][];
 };
 
 /**
@@ -97,20 +111,20 @@ export const mergeArraysUnique = <T>(array1: T[], array2: T[]): T[] => {
 /**
  * Agrupar array por propiedad
  */
-export const groupBy = <T extends Record<string, any>>(
+export const groupBy = <T extends Record<string, unknown>>(
   array: T[],
-  key: keyof T
+  key: keyof T,
 ): Record<string | number, T[]> => {
   return array.reduce(
     (groups, item) => {
-      const groupKey = item[key];
+      const groupKey = String(item[key]);
       if (!groups[groupKey]) {
         groups[groupKey] = [];
       }
       groups[groupKey].push(item);
       return groups;
     },
-    {} as Record<string | number, T[]>
+    {} as Record<string | number, T[]>,
   );
 };
 
@@ -132,7 +146,7 @@ export const removeDuplicates = <T>(array: T[]): T[] => {
  * Ordenar array alfabéticamente
  */
 export const sortAlphabetically = (array: string[]): string[] => {
-  return [...array].sort((a, b) => a.localeCompare(b, 'es'));
+  return [...array].sort((a, b) => a.localeCompare(b, "es"));
 };
 
 /**
@@ -175,8 +189,8 @@ export const interleave = <T>(array1: T[], array2: T[]): T[] => {
   const maxLength = Math.max(array1.length, array2.length);
 
   for (let i = 0; i < maxLength; i++) {
-    if (i < array1.length) result.push(array1[i]);
-    if (i < array2.length) result.push(array2[i]);
+    if (i < array1.length) result.push(array1[i]!);
+    if (i < array2.length) result.push(array2[i]!);
   }
 
   return result;
@@ -187,50 +201,52 @@ export const interleave = <T>(array1: T[], array2: T[]): T[] => {
 /**
  * Buscar en array por múltiples campos
  */
-export const searchInArray = <T extends Record<string, any>>(
+export const searchInArray = <T extends Record<string, unknown>>(
   array: T[],
   query: string,
-  fields: (keyof T)[]
+  fields: (keyof T)[],
 ): T[] => {
   const lowerQuery = query.toLowerCase();
   return array.filter((item) =>
     fields.some((field) => {
       const value = item[field];
-      if (typeof value === 'string') {
+      if (typeof value === "string") {
         return value.toLowerCase().includes(lowerQuery);
       }
-      if (typeof value === 'number') {
+      if (typeof value === "number") {
         return value.toString().includes(lowerQuery);
       }
       return false;
-    })
+    }),
   );
 };
 
 /**
  * Filtrar array por rango de números
  */
-export const filterByRange = <T extends Record<string, any>>(
+export const filterByRange = <T extends Record<string, unknown>>(
   array: T[],
   field: keyof T,
   min: number,
-  max: number
+  max: number,
 ): T[] => {
   return array.filter((item) => {
-    const value = item[field] as number;
-    return value >= min && value <= max;
+    const value = Number(item[field]);
+    return Number.isFinite(value) && value >= min && value <= max;
   });
 };
 
 /**
  * Filtrar por múltiples criterios
  */
-export const filterByMultiple = <T extends Record<string, any>>(
+export const filterByMultiple = <T extends Record<string, unknown>>(
   array: T[],
-  criteria: Record<keyof T, any>
+  criteria: Partial<Record<keyof T, unknown>>,
 ): T[] => {
   return array.filter((item) =>
-    Object.keys(criteria).every((key) => item[key as keyof T] === criteria[key as keyof T])
+    Object.keys(criteria).every(
+      (key) => item[key as keyof T] === criteria[key as keyof T],
+    ),
   );
 };
 
@@ -247,9 +263,9 @@ export const generateId = (): string => {
  * Generar UUID v4
  */
 export const generateUUID = (): string => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
@@ -272,9 +288,11 @@ export const generateRandomColor = (): string => {
  * Generar confirmación de reserva
  */
 export const generateConfirmationNumber = (): string => {
-  const prefix = 'RES';
+  const prefix = "RES";
   const date = new Date();
-  const dateStr = date.getFullYear().toString().slice(-2) + String(date.getMonth() + 1).padStart(2, '0');
+  const dateStr =
+    date.getFullYear().toString().slice(-2) +
+    String(date.getMonth() + 1).padStart(2, "0");
   const random = Math.random().toString(36).substr(2, 5).toUpperCase();
   return `${prefix}${dateStr}${random}`;
 };
@@ -291,13 +309,13 @@ export const delay = (ms: number): Promise<void> => {
 /**
  * Debounce
  */
-export const debounce = <T extends (...args: any[]) => any>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout | null = null;
+export const debounce = <Args extends unknown[]>(
+  func: (...args: Args) => unknown,
+  wait: number,
+): ((...args: Args) => void) => {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
 
-  return function executedFunction(...args: Parameters<T>) {
+  return function executedFunction(...args: Args) {
     const later = () => {
       timeout = null;
       func(...args);
@@ -314,13 +332,13 @@ export const debounce = <T extends (...args: any[]) => any>(
 /**
  * Throttle
  */
-export const throttle = <T extends (...args: any[]) => any>(
-  func: T,
-  limit: number
-): ((...args: Parameters<T>) => void) => {
+export const throttle = <Args extends unknown[]>(
+  func: (...args: Args) => unknown,
+  limit: number,
+): ((...args: Args) => void) => {
   let inThrottle: boolean;
 
-  return function (...args: Parameters<T>) {
+  return function (...args: Args) {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
@@ -335,7 +353,7 @@ export const throttle = <T extends (...args: any[]) => any>(
 export const retry = async <T>(
   fn: () => Promise<T>,
   retries = 3,
-  delayMs = 1000
+  delayMs = 1000,
 ): Promise<T> => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -345,7 +363,7 @@ export const retry = async <T>(
       await delay(delayMs * Math.pow(2, i));
     }
   }
-  throw new Error('Max retries alcanzado');
+  throw new Error("Max retries alcanzado");
 };
 
 // ==================== OPERACIONES CON OBJETOS ====================
@@ -360,7 +378,7 @@ export const deepCopy = <T>(obj: T): T => {
 /**
  * Hacer merge shallow de objetos
  */
-export const mergeObjects = <T extends Record<string, any>>(
+export const mergeObjects = <T extends Record<string, unknown>>(
   ...objects: T[]
 ): T => {
   return Object.assign({}, ...objects);
@@ -369,44 +387,47 @@ export const mergeObjects = <T extends Record<string, any>>(
 /**
  * Hacer merge deep de objetos
  */
-export const deepMerge = <T extends Record<string, any>>(
-  target: T,
-  source: Partial<T>
-): T => {
-  const output = { ...target };
-
-  Object.keys(source).forEach((key) => {
-    if (source[key as keyof T] && typeof source[key as keyof T] === 'object') {
-      output[key as keyof T] = deepMerge(
-        target[key as keyof T] || {},
-        source[key as keyof T]
-      );
-    } else {
-      output[key as keyof T] = source[key as keyof T]!;
+export const deepMerge = <T>(target: T, source: Partial<T>): T => {
+  const mergeValues = (current: unknown, incoming: unknown): unknown => {
+    if (
+      current &&
+      incoming &&
+      typeof current === "object" &&
+      typeof incoming === "object" &&
+      !Array.isArray(current) &&
+      !Array.isArray(incoming)
+    ) {
+      const output: Record<string, unknown> = {
+        ...(current as Record<string, unknown>),
+      };
+      for (const [key, value] of Object.entries(incoming)) {
+        output[key] = mergeValues(output[key], value);
+      }
+      return output;
     }
-  });
+    return incoming === undefined ? current : incoming;
+  };
 
-  return output;
+  return mergeValues(target, source) as T;
 };
 
 /**
  * Omitir propiedades de objeto
  */
-export const omit = <T extends Record<string, any>, K extends keyof T>(
+export const omit = <T extends Record<string, unknown>, K extends keyof T>(
   obj: T,
   ...keys: K[]
 ): Omit<T, K> => {
-  const result = { ...obj };
-  keys.forEach((key) => {
-    delete result[key];
-  });
-  return result;
+  const omitted = new Set(keys.map(String));
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !omitted.has(key)),
+  ) as Omit<T, K>;
 };
 
 /**
  * Seleccionar propiedades de objeto
  */
-export const pick = <T extends Record<string, any>, K extends keyof T>(
+export const pick = <T extends Record<string, unknown>, K extends keyof T>(
   obj: T,
   ...keys: K[]
 ): Pick<T, K> => {
@@ -429,20 +450,20 @@ export const isEqual = <T>(obj1: T, obj2: T): boolean => {
 /**
  * Verificar si es vacío
  */
-export const isEmpty = (value: any): boolean => {
+export const isEmpty = (value: unknown): boolean => {
   if (value === null || value === undefined) return true;
-  if (typeof value === 'string') return value.trim().length === 0;
+  if (typeof value === "string") return value.trim().length === 0;
   if (Array.isArray(value)) return value.length === 0;
-  if (typeof value === 'object') return Object.keys(value).length === 0;
+  if (typeof value === "object") return Object.keys(value).length === 0;
   return false;
 };
 
 /**
  * Verificar si objeto tiene propiedad
  */
-export const hasProperty = <T extends Record<string, any>>(
+export const hasProperty = <T extends object>(
   obj: T,
-  prop: string
+  prop: PropertyKey,
 ): boolean => {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 };
@@ -452,12 +473,12 @@ export const hasProperty = <T extends Record<string, any>>(
 /**
  * Construir query string desde objeto
  */
-export const buildQueryString = (params: Record<string, any>): string => {
+export const buildQueryString = (params: Record<string, unknown>): string => {
   const queryParams = new URLSearchParams();
 
   Object.keys(params).forEach((key) => {
     const value = params[key];
-    if (value !== null && value !== undefined && value !== '') {
+    if (value !== null && value !== undefined && value !== "") {
       queryParams.append(key, String(value));
     }
   });
@@ -468,7 +489,9 @@ export const buildQueryString = (params: Record<string, any>): string => {
 /**
  * Parsear query string a objeto
  */
-export const parseQueryString = (queryString: string): Record<string, string> => {
+export const parseQueryString = (
+  queryString: string,
+): Record<string, string> => {
   const params = new URLSearchParams(queryString);
   const result: Record<string, string> = {};
 
@@ -482,7 +505,10 @@ export const parseQueryString = (queryString: string): Record<string, string> =>
 /**
  * Agregar parámetros a URL
  */
-export const addQueryParams = (url: string, params: Record<string, any>): string => {
+export const addQueryParams = (
+  url: string,
+  params: Record<string, unknown>,
+): string => {
   const urlObj = new URL(url);
   const queryString = buildQueryString(params);
 

@@ -1,6 +1,6 @@
 <template>
   <CModal
-    :isOpen="isOpen"
+    :is-open="isOpen"
     :title="client ? 'Editar Cliente' : 'Nuevo Cliente'"
     size="md"
     @close="handleCancel"
@@ -24,7 +24,7 @@ interface Props {
 }
 
 defineProps<Props>();
-defineEmits<{
+const emit = defineEmits<{
   submit: [data: CreateClientRequest];
   cancel: [];
 }>();

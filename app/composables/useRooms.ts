@@ -93,7 +93,7 @@ export const useRooms = () => {
       const response = await roomsStore.createRoom(data);
       uiStore.success(`Habitación ${data.number} creada exitosamente`);
       return response;
-    } catch (error: any) {
+    } catch {
       uiStore.error("Error al crear habitación");
       throw error;
     }
@@ -107,7 +107,7 @@ export const useRooms = () => {
       const response = await roomsStore.updateRoom(id, data);
       uiStore.success("Habitación actualizada exitosamente");
       return response;
-    } catch (error: any) {
+    } catch {
       uiStore.error("Error al actualizar habitación");
       throw error;
     }
@@ -121,7 +121,7 @@ export const useRooms = () => {
       await roomsService.markForMaintenance(roomId);
       await roomsStore.updateRoomStatus(roomId, "maintenance");
       uiStore.success("Habitación marcada para mantenimiento");
-    } catch (error: any) {
+    } catch {
       uiStore.error("Error al marcar para mantenimiento");
       throw error;
     }
@@ -135,7 +135,7 @@ export const useRooms = () => {
       await roomsService.markAsAvailable(roomId);
       await roomsStore.updateRoomStatus(roomId, "available");
       uiStore.success("Habitación marcada como disponible");
-    } catch (error: any) {
+    } catch {
       uiStore.error("Error al marcar como disponible");
       throw error;
     }

@@ -10,7 +10,7 @@
     :disabled="disabled || loading"
     v-bind="$attrs"
   >
-    <span v-if="loading" class="btn-spinner"></span>
+    <span v-if="loading" class="btn-spinner"/>
     <span v-if="icon && !loading" class="btn-icon">{{ icon }}</span>
     <slot />
   </button>
@@ -30,7 +30,9 @@ withDefaults(defineProps<Props>(), {
   variant: 'primary',
   size: 'md',
   disabled: false,
-  loading: false
+  loading: false,
+  icon: '',
+  customClass: ''
 });
 </script>
 

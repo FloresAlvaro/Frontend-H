@@ -1,13 +1,13 @@
 <template>
   <CModal
-    :isOpen="isOpen"
+    :is-open="isOpen"
     title="Realizar Check-in"
     size="md"
     @close="handleCancel"
   >
     <div v-if="reservation" class="checkin-info">
-      <p><strong>Cliente:</strong> {{ reservation.client?.name }}</p>
-      <p><strong>Habitación:</strong> {{ reservation.room?.number }}</p>
+      <p><strong>Cliente:</strong> {{ reservation.client_name }}</p>
+      <p><strong>Habitación:</strong> {{ reservation.room_number }}</p>
       <p><strong>Check-in:</strong> {{ formatDate(reservation.check_in, 'DD/MM/YYYY') }}</p>
     </div>
 
@@ -18,7 +18,7 @@
         class="textarea"
         placeholder="Observaciones sobre el check-in"
         rows="4"
-      ></textarea>
+      />
     </div>
 
     <template #footer>
@@ -44,7 +44,7 @@ interface Props {
 }
 
 defineProps<Props>();
-defineEmits<{
+const emit = defineEmits<{
   confirm: [notes: string];
   cancel: [];
 }>();

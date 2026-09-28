@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="form">
+  <form class="form" @submit.prevent="handleSubmit">
     <div class="form-row-2">
       <CInput
         v-model="form.number"
@@ -24,22 +24,6 @@
         label="Tipo de Habitación"
         placeholder="1"
         required
-      />
-    </div>
-
-    <div class="form-row">
-      <CInput
-        v-model="form.status"
-        label="Estado"
-        placeholder="available"
-      />
-    </div>
-
-    <div class="form-row">
-      <CInput
-        v-model="form.description"
-        label="Descripción"
-        placeholder="Detalles de la habitación"
       />
     </div>
 
@@ -72,9 +56,7 @@ const emit = defineEmits<{
 const form = ref({
   number: '',
   floor: '',
-  room_type_id: '',
-  status: 'available',
-  description: ''
+  room_type_id: ''
 });
 
 const isEditing = computed(() => !!props.room);
@@ -83,14 +65,29 @@ watch(
   () => props.room,
   (room) => {
     if (room) {
-      form.value = { ...room };
+      form.value = {
+        number: room.number,
+        floor: room.floor == null ? '' : String(room.floor),
+        room_type_id: String(room.room_type_id)
+      };
+    } else {
+      form.value = { number: '', floor: '', room_type_id: '' };
     }
   },
   { immediate: true }
 );
 
 const handleSubmit = () => {
-  emit('submit', form.value as CreateRoomRequest);
+  const roomTypeId = Number(form.value.room_type_id);
+  const floor = Number(form.value.floor);
+  if (!form.value.number.trim() || !Number.isInteger(roomTypeId) || roomTypeId <= 0) return;
+
+  const data: CreateRoomRequest = {
+    number: form.value.number.trim(),
+    room_type_id: roomTypeId,
+    ...(form.value.floor.trim() && Number.isInteger(floor) ? { floor } : {})
+  };
+  emit('submit', data);
 };
 
 const handleCancel = () => {
